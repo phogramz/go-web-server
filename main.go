@@ -1,7 +1,13 @@
 package main
 import ("fmt"   //доступ функциям (напр: вывод на сайт,терминал)
-        "net/http"   //показывать инф-ю пользователю, отслежевать его действия
-        "html/template")   //для работы с шаблонами html, графическая чать
+        //"net/http"   //показывать инф-ю пользователю, отслежевать его действия
+        //"html/template" //для работы с шаблонами html, графическая чать
+        "database/sql"
+
+	      _ "github.com/go-sql-driver/mysql"
+        //_ "pkg/mod/github.com/go-sql-driver/mysql"
+        //_ "pkg/mod/github.com/go-sql-driver/mysql@v1.6.0"
+)
 
 type Mission struct {
   Name string
@@ -44,12 +50,29 @@ func (this *Mission) setNewTarget(newTarget string) { //явно определ�
 }
 
 func main() {
-  //var bob User = .... создание объекта
-  //bob := User{Name: "Bob", Age: 21, Money: -100, Average_grades: 4.3, Happiness: 0.7} //создание объекта
-  //bob := User{"Bob", 21, -100, 4.3, 0.7} //создание объекта
-  handleRequest() //отслеживаем url, запускаем сервер
-}
+  db, err := sql.Open("mysql", "mysql:mysql@tcp(localhost:3306)/golangdb")
+  if err != nil {
+    panic(err)
+  }
+  defer db.Close()
 
+  //Установка данных
+  // mode, err := db.Query("alter database golangdb set read_write")
+  // if err != nil {
+  //   panic(err)
+  // }
+  insert, err := db.Query("INSERT INTO `missions` (`ID`, `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, `Crew`, `CustomerCountry`, `LaunchSite`, `Success`, `CauseFailure`) VALUES('1', 'Alex', '25 aug', '26 feb', '45', 'Cosmos', 'Atlas', '3', 'USA', 'Beach', '1', '-')")
+  //insert, err := db.Query("INSERT INTO `crewtable` (`member1`, `member2`, `member3`, `member4`, `member5`, `member6`, `member7`, `member8`, `member9`) VALUES('Bob', 'Alex', 'Frank', 'Prev', 'Ing', '-', '-', '-', '-')")
+  if err != nil {
+    panic(err)
+  }
+  //defer mode.Close()
+  defer insert.Close()
+
+  fmt.Println("Подключено к MySql")
+  //handleRequest() //отслеживаем url, запускаем сервер
+}
+/*
 func handleRequest() {
   http.HandleFunc("/", home_page) //arg1- отслеживание перехода по url; arg2-метод при arg1; /-главная страница (/about)
   http.HandleFunc("/faq/", faq_page)
@@ -144,3 +167,4 @@ func Mars2020_page(w_page http.ResponseWriter, r *http.Request)  {
                      "Atlas V (541)", []string{"Rover: Perseverance","Coptet: Ingenuity"}, "США", "Мыс Канаверал", true, "-"}
   fmt.Fprintf(w_page, Mars2020.getAllInfo())
 }
+*/
