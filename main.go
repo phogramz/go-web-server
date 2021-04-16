@@ -3,7 +3,7 @@ import ("fmt"   //доступ функциям (напр: вывод на са�
         "net/http"   //показывать инф-ю пользователю, отслежевать его действия
         "html/template" //для работы с шаблонами html, графическая чать
         "database/sql"
-
+        _ "reflect"
 	      _ "github.com/go-sql-driver/mysql"
         //_ "pkg/mod/github.com/go-sql-driver/mysql"
         //_ "pkg/mod/github.com/go-sql-driver/mysql@v1.6.0"
@@ -117,11 +117,34 @@ func handleRequest() {
 }
 
 func home_page(w_page http.ResponseWriter, r *http.Request) { // arg2(r)-запрос для проверки передачи данных
-  tmpl, err := template.ParseFiles("templates/home_page.html") //v1-хранит шаблон, v2-обработка ошибок
+  tmpl, err := template.ParseFiles("templates/index.html") //v1-хранит шаблон, v2-обработка ошибок
   if err != nil {
     panic(err)
   }
   tmpl.Execute(w_page, home_page) //отображение шаблона;
+}
+
+// func (s Mission) toString() string {
+//         return fmt.Sprintf("%b", s)
+// }
+
+// func getType(myvar interface{}) string {
+//     if t := reflect.TypeOf(myvar); t.Kind() == reflect.Ptr {
+//         return "*" + t.Elem().Name()
+//     } else {
+//         return t.Name()
+//     }
+// }
+
+func (this *Mission) parse_page(w_page http.ResponseWriter, r *http.Request){
+  //htmlFile := reflect.NameOf(*this).Elem()
+  //htmlFile := reflect.TypeOf(*this).Elem().Name
+  //htmlFile := getType(*this)
+  tmpl, err := template.ParseFiles("templates/mission.html") //v1-хранит шаблон, v2-обработка ошибок
+  if err != nil {
+    panic(err)
+  }
+  tmpl.Execute(w_page, this)
 }
 
 func faq_page(w_page http.ResponseWriter, r *http.Request) {
@@ -151,7 +174,8 @@ func Pioner5_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
-    fmt.Fprintf(w_page, Pioner5.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
+    Pioner5.parse_page(w_page, r)
+    //fmt.Fprintf(w_page, Pioner5.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
@@ -177,7 +201,8 @@ func HeliosB_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
-    fmt.Fprintf(w_page, HeliosB.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
+    HeliosB.parse_page(w_page, r)
+    //fmt.Fprintf(w_page, HeliosB.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
@@ -203,7 +228,8 @@ func PionerE_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
-    fmt.Fprintf(w_page, PionerE.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
+    PionerE.parse_page(w_page, r)
+    //fmt.Fprintf(w_page, PionerE.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
@@ -229,7 +255,8 @@ func Moon3_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
-    fmt.Fprintf(w_page, Moon3.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
+    Moon3.parse_page(w_page, r)
+    //fmt.Fprintf(w_page, Moon3.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
@@ -255,7 +282,8 @@ func Moon19_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
-    fmt.Fprintf(w_page, Moon19.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
+    Moon19.parse_page(w_page, r)
+    //fmt.Fprintf(w_page, Moon19.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
@@ -281,7 +309,8 @@ func Appolo11_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
-    fmt.Fprintf(w_page, Appolo11.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
+    Appolo11.parse_page(w_page, r)
+    //fmt.Fprintf(w_page, Appolo11.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
@@ -307,7 +336,8 @@ func MoonWalker2_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
-    fmt.Fprintf(w_page, MoonWalker2.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
+    MoonWalker2.parse_page(w_page, r)
+    //fmt.Fprintf(w_page, MoonWalker2.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
@@ -333,7 +363,8 @@ func Voyager2_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
-    fmt.Fprintf(w_page, Voyager2.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
+    Voyager2.parse_page(w_page, r)
+    //fmt.Fprintf(w_page, Voyager2.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
@@ -359,7 +390,8 @@ func Akatcuki_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
-    fmt.Fprintf(w_page, Akatcuki.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
+    Akatcuki.parse_page(w_page, r)
+    //fmt.Fprintf(w_page, Akatcuki.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
@@ -385,7 +417,8 @@ func NewHorizons_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
-    fmt.Fprintf(w_page, NewHorizons.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
+    NewHorizons.parse_page(w_page, r)
+    //fmt.Fprintf(w_page, NewHorizons.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
@@ -411,6 +444,7 @@ func Mars2020_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
-    fmt.Fprintf(w_page, Mars2020.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
+    Mars2020.parse_page(w_page, r)
+    //fmt.Fprintf(w_page, Mars2020.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
