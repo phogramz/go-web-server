@@ -35,7 +35,7 @@ type Mission struct {
   DayDuration uint16 `json:"DayDuration"`//uint16-хранит целое неотрицательное число
   Target string `json:"Target"`
   CarrierRocket string `json:"CarrierRocket"`
-  Crew uint16 `json:"Crew"`
+  Crew TCrew `json:"Crew"`
   CustomerCountry string `json:"CustomerCountry"`
   LaunchSite string `json:"LaunchSite"`
   Success bool `json:"Success"`
@@ -98,7 +98,7 @@ func main() {
 }
 
 func handleRequest() {
-  http.HandleFunc("/", home_page) //arg1- отслеживание перехода по url; /-главная страница
+  http.HandleFunc("/", index) //arg1- отслеживание перехода по url; /-главная страница
   http.HandleFunc("/faq/", faq_page)
   http.HandleFunc("/Pioner5/", Pioner5_page)
   http.HandleFunc("/HeliosB/", HeliosB_page)
@@ -116,12 +116,15 @@ func handleRequest() {
   //...arg1-порт по чтению сервера(любой свободный на ПК); arg2-настройки для сервера; nil-NULL
 }
 
-func home_page(w_page http.ResponseWriter, r *http.Request) { // arg2(r)-запрос для проверки передачи данных
-  tmpl, err := template.ParseFiles("templates/index.html") //v1-хранит шаблон, v2-обработка ошибок
+func index(w_page http.ResponseWriter, r *http.Request) { // arg2(r)-запрос для проверки передачи данных
+  tmpl, err := template.ParseFiles("templates/index.html",
+                                   "templates/header.html",
+                                   "templates/footer.html",
+                                   "templates/mission.html") //v1-хранит шаблон, v2-обработка ошибок
   if err != nil {
     panic(err)
   }
-  tmpl.Execute(w_page, home_page) //отображение шаблона;
+  tmpl.ExecuteTemplate(w_page, "index", nil) //отображение шаблона;
 }
 
 // func (s Mission) toString() string {
@@ -140,25 +143,56 @@ func (this *Mission) parse_page(w_page http.ResponseWriter, r *http.Request){
   //htmlFile := reflect.NameOf(*this).Elem()
   //htmlFile := reflect.TypeOf(*this).Elem().Name
   //htmlFile := getType(*this)
-  tmpl, err := template.ParseFiles("templates/mission.html") //v1-хранит шаблон, v2-обработка ошибок
+  tmpl, err := template.ParseFiles("templates/index.html",
+                                   "templates/header.html",
+                                   "templates/footer.html",
+                                   "templates/mission.html") //v1-хранит шаблон, v2-обработка ошибок
   if err != nil {
     panic(err)
   }
-  tmpl.Execute(w_page, this)
+  tmpl.ExecuteTemplate(w_page, "mission", this)
 }
 
 func faq_page(w_page http.ResponseWriter, r *http.Request) {
+  res, err := db.Query("SELECT `title`, `id_genre` FROM tbl_1")
+  if err != nil {
+    panic(err)
+  }
+  for res.Next() {
+    var title string
+    var genre string
+    err = res.Scan(&title, &genre)
+    if err != nil {
+      panic(err)
+    }
+    fmt.Fprintf(w_page, fmt.Sprintf("\n title: %s, \n genre: %s", title, genre))
+  }
   // fmt.Fprintf(w_page, `<h1>Main Text</h1>
   // <b>Main Text</b>`)
 }
 
 func Pioner5_page(w_page http.ResponseWriter, r *http.Request)  {
-  res, err := db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, `ID_Crew`," +
+  res, err := db.Query("SELECT `member1`, `member2`, `member3`, `member4`, `member5`, `member6`, `member7`" +
+    " FROM tbl_crew WHERE ID_Crew = 1")
+  if err != nil {
+    panic(err)
+  }
+  var Pioner5_crew TCrew
+  for res.Next() {
+    err = res.Scan(&Pioner5_crew.member1,
+                   &Pioner5_crew.member2,
+                   &Pioner5_crew.member3,
+                   &Pioner5_crew.member4,
+                   &Pioner5_crew.member5,
+                   &Pioner5_crew.member6,
+                   &Pioner5_crew.member7)
+               }
+  res, err = db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, " +
     " `CustomerCountry`, `LaunchSite`, `Success`, `CauseFailure` FROM tbl_mission WHERE Name = 'Пионер-5'")
   if err != nil {
     panic(err)
   }
-  for res.Next() {
+    for res.Next() {
     var Pioner5 Mission
     err = res.Scan(&Pioner5.Name,
                    &Pioner5.StartData,
@@ -166,7 +200,6 @@ func Pioner5_page(w_page http.ResponseWriter, r *http.Request)  {
                    &Pioner5.DayDuration,
                    &Pioner5.Target,
                    &Pioner5.CarrierRocket,
-                   &Pioner5.Crew,
                    &Pioner5.CustomerCountry,
                    &Pioner5.LaunchSite,
                    &Pioner5.Success,
@@ -174,13 +207,29 @@ func Pioner5_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
+    Pioner5.Crew = Pioner5_crew
     Pioner5.parse_page(w_page, r)
     //fmt.Fprintf(w_page, Pioner5.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
 func HeliosB_page(w_page http.ResponseWriter, r *http.Request)  {
-  res, err := db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, `ID_Crew`," +
+  res, err := db.Query("SELECT `member1`, `member2`, `member3`, `member4`, `member5`, `member6`, `member7`" +
+    " FROM tbl_crew WHERE ID_Crew = 2")
+  if err != nil {
+    panic(err)
+  }
+  var HeliosB_crew TCrew
+  for res.Next() {
+    err = res.Scan(&HeliosB_crew.member1,
+                   &HeliosB_crew.member2,
+                   &HeliosB_crew.member3,
+                   &HeliosB_crew.member4,
+                   &HeliosB_crew.member5,
+                   &HeliosB_crew.member6,
+                   &HeliosB_crew.member7)
+               }
+  res, err = db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, " +
     " `CustomerCountry`, `LaunchSite`, `Success`, `CauseFailure` FROM tbl_mission WHERE Name = 'Helios-B'")
   if err != nil {
     panic(err)
@@ -193,7 +242,7 @@ func HeliosB_page(w_page http.ResponseWriter, r *http.Request)  {
                    &HeliosB.DayDuration,
                    &HeliosB.Target,
                    &HeliosB.CarrierRocket,
-                   &HeliosB.Crew,
+                   //&HeliosB.Crew,
                    &HeliosB.CustomerCountry,
                    &HeliosB.LaunchSite,
                    &HeliosB.Success,
@@ -201,13 +250,29 @@ func HeliosB_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
+    HeliosB.Crew = HeliosB_crew
     HeliosB.parse_page(w_page, r)
     //fmt.Fprintf(w_page, HeliosB.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
 func PionerE_page(w_page http.ResponseWriter, r *http.Request)  {
-  res, err := db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, `ID_Crew`," +
+  res, err := db.Query("SELECT `member1`, `member2`, `member3`, `member4`, `member5`, `member6`, `member7`" +
+    " FROM tbl_crew WHERE ID_Crew = 3")
+  if err != nil {
+    panic(err)
+  }
+  var PionerE_crew TCrew
+  for res.Next() {
+    err = res.Scan(&PionerE_crew.member1,
+                   &PionerE_crew.member2,
+                   &PionerE_crew.member3,
+                   &PionerE_crew.member4,
+                   &PionerE_crew.member5,
+                   &PionerE_crew.member6,
+                   &PionerE_crew.member7)
+               }
+  res, err = db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, " +
     " `CustomerCountry`, `LaunchSite`, `Success`, `CauseFailure` FROM tbl_mission WHERE Name = 'Пионер-E'")
   if err != nil {
     panic(err)
@@ -220,7 +285,7 @@ func PionerE_page(w_page http.ResponseWriter, r *http.Request)  {
                    &PionerE.DayDuration,
                    &PionerE.Target,
                    &PionerE.CarrierRocket,
-                   &PionerE.Crew,
+                   //&PionerE.Crew,
                    &PionerE.CustomerCountry,
                    &PionerE.LaunchSite,
                    &PionerE.Success,
@@ -228,13 +293,29 @@ func PionerE_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
+    PionerE.Crew = PionerE_crew
     PionerE.parse_page(w_page, r)
     //fmt.Fprintf(w_page, PionerE.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
 func Moon3_page(w_page http.ResponseWriter, r *http.Request)  {
-  res, err := db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, `ID_Crew`," +
+  res, err := db.Query("SELECT `member1`, `member2`, `member3`, `member4`, `member5`, `member6`, `member7`" +
+    " FROM tbl_crew WHERE ID_Crew = 4")
+  if err != nil {
+    panic(err)
+  }
+  var Moon3_crew TCrew
+  for res.Next() {
+    err = res.Scan(&Moon3_crew.member1,
+                   &Moon3_crew.member2,
+                   &Moon3_crew.member3,
+                   &Moon3_crew.member4,
+                   &Moon3_crew.member5,
+                   &Moon3_crew.member6,
+                   &Moon3_crew.member7)
+               }
+  res, err = db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, " +
     " `CustomerCountry`, `LaunchSite`, `Success`, `CauseFailure` FROM tbl_mission WHERE ID = 4")
   if err != nil {
     panic(err)
@@ -247,7 +328,7 @@ func Moon3_page(w_page http.ResponseWriter, r *http.Request)  {
                    &Moon3.DayDuration,
                    &Moon3.Target,
                    &Moon3.CarrierRocket,
-                   &Moon3.Crew,
+                   //&Moon3.Crew,
                    &Moon3.CustomerCountry,
                    &Moon3.LaunchSite,
                    &Moon3.Success,
@@ -255,13 +336,29 @@ func Moon3_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
+    Moon3.Crew = Moon3_crew
     Moon3.parse_page(w_page, r)
     //fmt.Fprintf(w_page, Moon3.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
 func Moon19_page(w_page http.ResponseWriter, r *http.Request)  {
-  res, err := db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, `ID_Crew`," +
+  res, err := db.Query("SELECT `member1`, `member2`, `member3`, `member4`, `member5`, `member6`, `member7`" +
+    " FROM tbl_crew WHERE ID_Crew = 5")
+  if err != nil {
+    panic(err)
+  }
+  var Moon19_crew TCrew
+  for res.Next() {
+    err = res.Scan(&Moon19_crew.member1,
+                   &Moon19_crew.member2,
+                   &Moon19_crew.member3,
+                   &Moon19_crew.member4,
+                   &Moon19_crew.member5,
+                   &Moon19_crew.member6,
+                   &Moon19_crew.member7)
+               }
+  res, err = db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, " +
     " `CustomerCountry`, `LaunchSite`, `Success`, `CauseFailure` FROM tbl_mission WHERE ID = 5")
   if err != nil {
     panic(err)
@@ -274,7 +371,7 @@ func Moon19_page(w_page http.ResponseWriter, r *http.Request)  {
                    &Moon19.DayDuration,
                    &Moon19.Target,
                    &Moon19.CarrierRocket,
-                   &Moon19.Crew,
+                   //&Moon19.Crew,
                    &Moon19.CustomerCountry,
                    &Moon19.LaunchSite,
                    &Moon19.Success,
@@ -282,13 +379,29 @@ func Moon19_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
+    Moon19.Crew = Moon19_crew
     Moon19.parse_page(w_page, r)
     //fmt.Fprintf(w_page, Moon19.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
 func Appolo11_page(w_page http.ResponseWriter, r *http.Request)  {
-  res, err := db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, `ID_Crew`," +
+  res, err := db.Query("SELECT `member1`, `member2`, `member3`, `member4`, `member5`, `member6`, `member7`" +
+    " FROM tbl_crew WHERE ID_Crew = 6")
+  if err != nil {
+    panic(err)
+  }
+  var Appolo11_crew TCrew
+  for res.Next() {
+    err = res.Scan(&Appolo11_crew.member1,
+                   &Appolo11_crew.member2,
+                   &Appolo11_crew.member3,
+                   &Appolo11_crew.member4,
+                   &Appolo11_crew.member5,
+                   &Appolo11_crew.member6,
+                   &Appolo11_crew.member7)
+               }
+  res, err = db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, " +
     " `CustomerCountry`, `LaunchSite`, `Success`, `CauseFailure` FROM tbl_mission WHERE ID = 6")
   if err != nil {
     panic(err)
@@ -301,7 +414,7 @@ func Appolo11_page(w_page http.ResponseWriter, r *http.Request)  {
                    &Appolo11.DayDuration,
                    &Appolo11.Target,
                    &Appolo11.CarrierRocket,
-                   &Appolo11.Crew,
+                   //&Appolo11.Crew,
                    &Appolo11.CustomerCountry,
                    &Appolo11.LaunchSite,
                    &Appolo11.Success,
@@ -309,13 +422,29 @@ func Appolo11_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
+    Appolo11.Crew = Appolo11_crew
     Appolo11.parse_page(w_page, r)
     //fmt.Fprintf(w_page, Appolo11.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
 func MoonWalker2_page(w_page http.ResponseWriter, r *http.Request)  {
-  res, err := db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, `ID_Crew`," +
+  res, err := db.Query("SELECT `member1`, `member2`, `member3`, `member4`, `member5`, `member6`, `member7`" +
+    " FROM tbl_crew WHERE ID_Crew = 7")
+  if err != nil {
+    panic(err)
+  }
+  var MoonWalker2_crew TCrew
+  for res.Next() {
+    err = res.Scan(&MoonWalker2_crew.member1,
+                   &MoonWalker2_crew.member2,
+                   &MoonWalker2_crew.member3,
+                   &MoonWalker2_crew.member4,
+                   &MoonWalker2_crew.member5,
+                   &MoonWalker2_crew.member6,
+                   &MoonWalker2_crew.member7)
+               }
+  res, err = db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, " +
     " `CustomerCountry`, `LaunchSite`, `Success`, `CauseFailure` FROM tbl_mission WHERE ID = 7")
   if err != nil {
     panic(err)
@@ -328,7 +457,7 @@ func MoonWalker2_page(w_page http.ResponseWriter, r *http.Request)  {
                    &MoonWalker2.DayDuration,
                    &MoonWalker2.Target,
                    &MoonWalker2.CarrierRocket,
-                   &MoonWalker2.Crew,
+                   //&MoonWalker2.Crew,
                    &MoonWalker2.CustomerCountry,
                    &MoonWalker2.LaunchSite,
                    &MoonWalker2.Success,
@@ -336,13 +465,29 @@ func MoonWalker2_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
+    MoonWalker2.Crew = MoonWalker2_crew
     MoonWalker2.parse_page(w_page, r)
     //fmt.Fprintf(w_page, MoonWalker2.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
 func Voyager2_page(w_page http.ResponseWriter, r *http.Request)  {
-  res, err := db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, `ID_Crew`," +
+  res, err := db.Query("SELECT `member1`, `member2`, `member3`, `member4`, `member5`, `member6`, `member7`" +
+    " FROM tbl_crew WHERE ID_Crew = 8")
+  if err != nil {
+    panic(err)
+  }
+  var Voyager2_crew TCrew
+  for res.Next() {
+    err = res.Scan(&Voyager2_crew.member1,
+                   &Voyager2_crew.member2,
+                   &Voyager2_crew.member3,
+                   &Voyager2_crew.member4,
+                   &Voyager2_crew.member5,
+                   &Voyager2_crew.member6,
+                   &Voyager2_crew.member7)
+               }
+  res, err = db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, " +
     " `CustomerCountry`, `LaunchSite`, `Success`, `CauseFailure` FROM tbl_mission WHERE ID = 8")
   if err != nil {
     panic(err)
@@ -355,7 +500,7 @@ func Voyager2_page(w_page http.ResponseWriter, r *http.Request)  {
                    &Voyager2.DayDuration,
                    &Voyager2.Target,
                    &Voyager2.CarrierRocket,
-                   &Voyager2.Crew,
+                   //&Voyager2.Crew,
                    &Voyager2.CustomerCountry,
                    &Voyager2.LaunchSite,
                    &Voyager2.Success,
@@ -363,13 +508,29 @@ func Voyager2_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
+    Voyager2.Crew = Voyager2_crew
     Voyager2.parse_page(w_page, r)
     //fmt.Fprintf(w_page, Voyager2.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
 func Akatcuki_page(w_page http.ResponseWriter, r *http.Request)  {
-  res, err := db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, `ID_Crew`," +
+  res, err := db.Query("SELECT `member1`, `member2`, `member3`, `member4`, `member5`, `member6`, `member7`" +
+    " FROM tbl_crew WHERE ID_Crew = 9")
+  if err != nil {
+    panic(err)
+  }
+  var Akatcuki_crew TCrew
+  for res.Next() {
+    err = res.Scan(&Akatcuki_crew.member1,
+                   &Akatcuki_crew.member2,
+                   &Akatcuki_crew.member3,
+                   &Akatcuki_crew.member4,
+                   &Akatcuki_crew.member5,
+                   &Akatcuki_crew.member6,
+                   &Akatcuki_crew.member7)
+               }
+  res, err = db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, " +
     " `CustomerCountry`, `LaunchSite`, `Success`, `CauseFailure` FROM tbl_mission WHERE ID = 9")
   if err != nil {
     panic(err)
@@ -382,7 +543,7 @@ func Akatcuki_page(w_page http.ResponseWriter, r *http.Request)  {
                    &Akatcuki.DayDuration,
                    &Akatcuki.Target,
                    &Akatcuki.CarrierRocket,
-                   &Akatcuki.Crew,
+                   //&Akatcuki.Crew,
                    &Akatcuki.CustomerCountry,
                    &Akatcuki.LaunchSite,
                    &Akatcuki.Success,
@@ -390,13 +551,29 @@ func Akatcuki_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
+    Akatcuki.Crew = Akatcuki_crew
     Akatcuki.parse_page(w_page, r)
     //fmt.Fprintf(w_page, Akatcuki.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
 func NewHorizons_page(w_page http.ResponseWriter, r *http.Request)  {
-  res, err := db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, `ID_Crew`," +
+  res, err := db.Query("SELECT `member1`, `member2`, `member3`, `member4`, `member5`, `member6`, `member7`" +
+    " FROM tbl_crew WHERE ID_Crew = 10")
+  if err != nil {
+    panic(err)
+  }
+  var NewHorizons_crew TCrew
+  for res.Next() {
+    err = res.Scan(&NewHorizons_crew.member1,
+                   &NewHorizons_crew.member2,
+                   &NewHorizons_crew.member3,
+                   &NewHorizons_crew.member4,
+                   &NewHorizons_crew.member5,
+                   &NewHorizons_crew.member6,
+                   &NewHorizons_crew.member7)
+               }
+  res, err = db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, " +
     " `CustomerCountry`, `LaunchSite`, `Success`, `CauseFailure` FROM tbl_mission WHERE ID = 10")
   if err != nil {
     panic(err)
@@ -409,7 +586,7 @@ func NewHorizons_page(w_page http.ResponseWriter, r *http.Request)  {
                    &NewHorizons.DayDuration,
                    &NewHorizons.Target,
                    &NewHorizons.CarrierRocket,
-                   &NewHorizons.Crew,
+                   //&NewHorizons.Crew,
                    &NewHorizons.CustomerCountry,
                    &NewHorizons.LaunchSite,
                    &NewHorizons.Success,
@@ -417,13 +594,29 @@ func NewHorizons_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
+    NewHorizons.Crew = NewHorizons_crew
     NewHorizons.parse_page(w_page, r)
     //fmt.Fprintf(w_page, NewHorizons.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
 func Mars2020_page(w_page http.ResponseWriter, r *http.Request)  {
-  res, err := db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, `ID_Crew`," +
+  res, err := db.Query("SELECT `member1`, `member2`, `member3`, `member4`, `member5`, `member6`, `member7`" +
+    " FROM tbl_crew WHERE ID_Crew = 11")
+  if err != nil {
+    panic(err)
+  }
+  var Mars2020_crew TCrew
+  for res.Next() {
+    err = res.Scan(&Mars2020_crew.member1,
+                   &Mars2020_crew.member2,
+                   &Mars2020_crew.member3,
+                   &Mars2020_crew.member4,
+                   &Mars2020_crew.member5,
+                   &Mars2020_crew.member6,
+                   &Mars2020_crew.member7)
+               }
+  res, err = db.Query("SELECT `Name`, `StartData`, `FinishData`, `DayDuration`, `Target`, `CarrierRocket`, " +
     " `CustomerCountry`, `LaunchSite`, `Success`, `CauseFailure` FROM tbl_mission WHERE ID = 11")
   if err != nil {
     panic(err)
@@ -436,7 +629,7 @@ func Mars2020_page(w_page http.ResponseWriter, r *http.Request)  {
                    &Mars2020.DayDuration,
                    &Mars2020.Target,
                    &Mars2020.CarrierRocket,
-                   &Mars2020.Crew,
+                   //&Mars2020.Crew,
                    &Mars2020.CustomerCountry,
                    &Mars2020.LaunchSite,
                    &Mars2020.Success,
@@ -444,6 +637,7 @@ func Mars2020_page(w_page http.ResponseWriter, r *http.Request)  {
     if err != nil {
       panic(err)
     }
+    Mars2020.Crew = Mars2020_crew
     Mars2020.parse_page(w_page, r)
     //fmt.Fprintf(w_page, Mars2020.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }

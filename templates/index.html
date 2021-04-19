@@ -1,57 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Главная страница</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://getbootstrap.com/docs/5.0/examples/blog/blog.css">
-</head>
-<body>
+{{ define "index" }}
 
-<div class="container">
-  <header class="blog-header py-3">
-    <div class="row flex-nowrap justify-content-between align-items-center">
-      <div class="col-4 pt-1">
-        <a class="link-secondary" href="#">Subscribe</a>
-      </div>
-      <div class="col-4 text-center">
-        <a class="blog-header-logo text-dark" href="/">Cosmo's Missions</a>
-      </div>
-      <div class="col-4 d-flex justify-content-end align-items-center">
-        <a class="link-secondary" href="#" aria-label="Search">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"></circle><path d="M21 21l-5.2-5.2"></path></svg>
-        </a>
-        <a class="btn btn-sm btn-outline-secondary" href="#">Sign up</a>
-      </div>
-    </div>
-  </header>
-
-  <div class="nav-scroller py-1 mb-2">
-    <nav class="nav d-flex justify-content-between">
-      <a class="p-2 link-secondary" href="/Pioner5/">Пионер-5</a>
-      <a class="p-2 link-secondary" href="/HeliosB/">Гелиос-B</a>
-      <a class="p-2 link-secondary" href="/PionerE/">Пионер-Е</a>
-      <a class="p-2 link-secondary" href="/Moon3/">Луна-3</a>
-      <a class="p-2 link-secondary" href="/Moon19/">Луна-19</a>
-      <a class="p-2 link-secondary" href="/Appolo11/">Аполон-11</a>
-      <a class="p-2 link-secondary" href="/MoonWalker2/">Луноход-2</a>
-      <a class="p-2 link-secondary" href="/Voyager2/">Вояджер-2</a>
-      <a class="p-2 link-secondary" href="/Akatcuki/">Акацуки</a>
-      <a class="p-2 link-secondary" href="/NewHorizons/">Новые Горизонты</a>
-      <a class="p-2 link-secondary" href="/Mars2020/">Марс-2020</a>
-      <a class="p-2 link-secondary" href="/faq/">FAQ</a>
-    </nav>
-  </div>
-</div>
+{{ template "header" }}
 
 <main class="container">
   <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
-    <div class="col-md-6 px-0">
-      <h1 class="display-4 fst-italic">Вертолёт NASA Ingenuity спущен на поверхность Марса.</h1>
-      <p class="lead my-3">4 апреля марсоход Perseverance спустил на поверхность Марса, находящийся на его борту, вертолет Ingenuity. 12 апреля аппарат должен будет совершить первый в истории управляемый полет на другой планете</p>
-      <p class="lead mb-0"><a href="#" class="text-white fw-bold">Читать далее...</a></p>
+    <div class="col-md-10 px-0">
+      <h1 class="display-4 fst-italic">Вертолет Ingenuity совершил свой первый полет на Марсе.</h1>
+      <p class="lead my-3">Марсоход Perseverance передал на Землю первые кадры взлета и посадки вертолета Ingenuity,
+        в ходе которой летательный аппарат поднялся на высоту в три метра над поверхностью планеты.
+        Об этом участники миссии рассказал на онлайн-пресс-брифинге в Лаборатории реактивного движения (JPL) NASA. (ТАСС)</p>
+      <p class="lead mb-0"><a href="https://nauka.tass.ru/nauka/11186541" class="text-white fw-bold">Читать далее...</a></p>
     </div>
   </div>
 
@@ -59,11 +17,11 @@
     <div class="col-md-6">
       <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
         <div class="col p-4 d-flex flex-column position-static">
-          <strong class="d-inline-block mb-2 text-primary">World</strong>
-          <h3 class="mb-0">Featured post</h3>
-          <div class="mb-1 text-muted">Nov 12</div>
-          <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-          <a href="#" class="stretched-link">Continue reading</a>
+          <strong class="d-inline-block mb-2 text-primary">SpaceX</strong>
+          <h3 class="mb-0">SpaceX выиграла контракт NASA.</h3>
+          <div class="mb-1 text-muted">Апр 17</div>
+          <p class="card-text mb-auto">Компания создаст лунный посадочный модуль для высадки астронавтов.</p>
+          <a href="https://www.rbc.ru/technology_and_media/17/04/2021/6079fd479a794779ca8f6744" class="stretched-link">Читать далее...</a>
         </div>
         <div class="col-auto d-none d-lg-block">
           <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
@@ -74,11 +32,11 @@
     <div class="col-md-6">
       <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
         <div class="col p-4 d-flex flex-column position-static">
-          <strong class="d-inline-block mb-2 text-success">Design</strong>
-          <h3 class="mb-0">Post title</h3>
-          <div class="mb-1 text-muted">Nov 11</div>
-          <p class="mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-          <a href="#" class="stretched-link">Continue reading</a>
+          <strong class="d-inline-block mb-2 text-success">Марс-2020</strong>
+          <h3 class="mb-0">Ingenuity на поверхности</h3>
+          <div class="mb-1 text-muted">Апр 10</div>
+          <p class="mb-auto">Вертолёт NASA Ingenuity спущен на поверхность Марса.</p>
+          <a href="https://3dnews.ru/1036487/marsianskiy-vertolyot-ingenuity-vigrugen-na-poverhnost-krasnoy-planeti-i-gotovitsya-k-nochyovke" class="stretched-link">Читать далее...</a>
         </div>
         <div class="col-auto d-none d-lg-block">
           <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
@@ -91,65 +49,45 @@
   <div class="row">
     <div class="col-md-8">
       <h3 class="pb-4 mb-4 fst-italic border-bottom">
-        From the Firehose
+        Актуальное о космосе
       </h3>
 
       <article class="blog-post">
-        <h2 class="blog-post-title">Sample blog post</h2>
-        <p class="blog-post-meta">January 1, 2014 by <a href="#">Mark</a></p>
+        <h2 class="blog-post-title">В поисках жизни: самые смелые будущие космические миссии</h2>
+        <p class="blog-post-meta">26 Сен, 2020 by <a href="https://www.iguides.ru/main/other/v_poiskakh_zhizni_samye_smelye_budushchie_kosmicheskie_missii/">Iguides</a></p>
 
-        <p>This blog post shows a few different types of content that’s supported and styled with Bootstrap. Basic typography, images, and code are all supported.</p>
+        <p>Концепт миссии к Энцеладу, ледяной луне Сатурна.</p>
         <hr>
-        <p>Yeah, she dances to her own beat. Oh, no. You could've been the greatest. 'Cause, baby, <a href="#">you're a firework</a>. Maybe a reason why all the doors are closed. Open up your heart and just let it begin. So très chic, yeah, she's a classic.</p>
+        <p>
+          Если бы у вас были несколько миллиардов долларов и группа самых талантливых ученых и инженеров в области космоса, куда бы вы отправились?
+          На самом деле на этот вопрос нет неправильного ответа. Даже если вы сузите круг до внешней части Солнечной системы — планет, лун, колец и других
+          космических обломков — <strong>вам точно никогда не надоест их исследовать</strong>. Но у этого изобилия есть ожидаемый недостаток: у ученых мало шансов когда-либо
+          совершить все миссии, о которых они могут мечтать. Однако продумывание этих миссии в любом случае является важной частью исследования космоса,
+          и ученые делают это регулярно.
         <blockquote>
-          <p>Bikinis, zucchinis, Martinis, no weenies. I know there will be sacrifice but that's the price. <strong>This is how we do it</strong>. I'm not sticking around to watch you go down. You think you're so rock and roll, but you're really just a joke. I know one spark will shock the world, yeah yeah. Can't replace you with a million rings.</p>
-        </blockquote>
-        <p>Trying to connect the dots, don't know what to tell my boss. Before you met me I was alright but things were kinda heavy. You just gotta ignite the light and let it shine. Glitter all over the room <em>pink flamingos</em> in the pool. </p>
-        <h2>Heading</h2>
-        <p>Suiting up for my crowning battle. If you only knew what the future holds. Bring the beat back. Peach-pink lips, yeah, everybody stares.</p>
-        <h3>Sub-heading</h3>
-        <p>You give a hundred reasons why, and you say you're really gonna try. Straight stuntin' yeah we do it like that. Calling out my name. ‘Cause I, I’m capable of anything.</p>
-        <pre><code>Example code block</code></pre>
-        <p>Before you met me I was alright but things were kinda heavy. You just gotta ignite the light and let it shine.</p>
-        <h3>Sub-heading</h3>
-        <p>You got the finest architecture. Passport stamps, she's cosmopolitan. Fine, fresh, fierce, we got it on lock. Never planned that one day I'd be losing you. She eats your heart out.</p>
+          Во время недавнего виртуального собрания Группы по оценке внешних планет (OPAG), научно-консультативной группы,
+          сосредоточенной на исследовании всего, что находится за поясом астероидов, ученые разобрали с аудиторией три различных концептуальных
+          исследовательских миссий, которые затем попадут в Десятилетний обзор планетарных наук, которым будет руководствоваться НАСА для выбора
+          миссий с 2023 по 2032 годы.
+        </p>
+        <h2>Концепт миссии к Энцеладу</h2>
+        <p>Первая остановка — ледяной спутник Сатурна, Энцелад, который является одной из главных целей ученых для поиска жизни в Солнечной системе.</p>
+        <h3>Океан на Энцеладе</h3>
+        <p>Миссия Кассини, завершившаяся в 2017 году, обнаружила убедительные доказательства того, что из его ледяной оболочки выплескиваются соленые гейзеры,
+          что, во-первых, подтверждает, что у Энцелада есть подповерхностный океан, а, во-вторых, значительно упрощает сбор проб из него..</p>
+        <h3>Куда отправятся космические корабли</h3>
+        <p>Во всех трех концептуальных исследованиях рассматривалась категория миссий, которую НАСА называет флагманской — такие проекты,
+          как марсоходы Curiosity и Perseverance, миссия Galileo к Юпитеру или миссия Cassini к Сатурну.
+          Это крупные миссии с космической стоимостью («Настойчивость» обошлась НАСА в 2,7 миллиарда долларов) и развернутыми научными программами,
+          а это означает, что НАСА определенно не сможет выполнить все три задачи одновременно. Но даже если ни одна из этих конкретных миссий не полетит,
+          они все равно могут определить, куда отправятся космические корабли в будущие десятилетия, просто дразня тем, что можно изучить в космосе.
+          Итак, давайте рассмотрим самые смелые научные миссии во внешние области Солнечной системы.</p>
         <ul>
-          <li>Got a motel and built a fort out of sheets.</li>
-          <li>Your kiss is cosmic, every move is magic.</li>
-          <li>Suiting up for my crowning battle.</li>
+          <li>Поиски жизни на Энцеладе.</li>
+          <li>Полет к Нептуну и Тритону.</li>
+          <li>К Плутону и дальше.</li>
         </ul>
-        <p>Takes you miles high, so high, 'cause she’s got that one international smile.</p>
-        <ol>
-          <li>Scared to rock the boat and make a mess.</li>
-          <li>I could have rewrite your addiction.</li>
-          <li>I know you get me so I let my walls come down.</li>
-        </ol>
-        <p>After a hurricane comes a rainbow.</p>
-      </article><!-- /.blog-post -->
-
-      <article class="blog-post">
-        <h2 class="blog-post-title">Another blog post</h2>
-        <p class="blog-post-meta">December 23, 2013 by <a href="#">Jacob</a></p>
-
-        <p>I am ready for the road less traveled. Already <a href="#">brushing off the dust</a>. Yeah, you're lucky if you're on her plane. I used to bite my tongue and hold my breath. Uh, She’s a beast. I call her Karma (come back). Black ray-bans, you know she's with the band. I can't sleep let's run away and don't ever look back, don't ever look back.</p>
-        <blockquote>
-          <p>Growing fast into a <strong>bolt of lightning</strong>. Be careful Try not to lead her on</p>
-        </blockquote>
-        <p>I'm intrigued, for a peek, heard it's fascinating. Oh oh! Wanna be a victim ready for abduction. She's got that international smile, oh yeah, she's got that one international smile. Do you ever feel, feel so paper thin. I’m gon’ put her in a coma. Sun-kissed skin so hot we'll melt your popsicle.</p>
-        <p>This is transcendental, on another level, boy, you're my lucky star.</p>
-      </article><!-- /.blog-post -->
-
-      <article class="blog-post">
-        <h2 class="blog-post-title">New feature</h2>
-        <p class="blog-post-meta">December 14, 2013 by <a href="#">Chris</a></p>
-
-        <p>From Tokyo to Mexico, to Rio. Yeah, you take me to utopia. I'm walking on air. We'd make out in your Mustang to Radiohead. I mean the ones, I mean like she's the one. Sun-kissed skin so hot we'll melt your popsicle. Slow cooking pancakes for my boy, still up, still fresh as a Daisy.</p>
-        <ul>
-          <li>I hope you got a healthy appetite.</li>
-          <li>You're never gonna be unsatisfied.</li>
-          <li>Got a motel and built a fort out of sheets.</li>
-        </ul>
-        <p>Don't need apologies. Boy, you're an alien your touch so foreign, it's <em>supernatural</em>, extraterrestrial. Talk about our future like we had a clue. I can feel a phoenix inside of me.</p>
+        <p>Через десятилетие с Земли будут запущены одни из самых грандиозных миссий за всю историю космических полетов.</p>
       </article><!-- /.blog-post -->
 
       <nav class="blog-pagination" aria-label="Pagination">
@@ -161,34 +99,31 @@
 
     <div class="col-md-4">
       <div class="p-4 mb-3 bg-light rounded">
-        <h4 class="fst-italic">About</h4>
-        <p class="mb-0">Saw you downtown singing the Blues. Watch you circle the drain. Why don't you let me stop by? Heavy is the head that <em>wears the crown</em>. Yes, we make angels cry, raining down on earth from up above.</p>
+        <h4 class="fst-italic">О сайте</h4>
+        <p class="mb-0">На сайте представлена информация о космических миссиях в период с 1960-х по 2020 г.
+          Сайт является частью примера организации архитектуры <em>клиент-сервер</em>. Данные о космических миссиях хранятся в таблицах базы данных MySql,
+          после запроса обрабатываются на локальном сервере, разработанным при помощи языка Golang, и отправляются на данный сайт,
+          который представляет <em>клиент</em> в текущей архитектуре. Взаимодействие <em>База данных - Сервер</em>
+          организовано при помощи приложения OpenServer 5.3.8.
+        </p>
       </div>
 
       <div class="p-4">
-        <h4 class="fst-italic">Archives</h4>
+        <h4 class="fst-italic">Текущие миссии</h4>
         <ol class="list-unstyled mb-0">
-          <li><a href="#">March 2014</a></li>
-          <li><a href="#">February 2014</a></li>
-          <li><a href="#">January 2014</a></li>
-          <li><a href="#">December 2013</a></li>
-          <li><a href="#">November 2013</a></li>
-          <li><a href="#">October 2013</a></li>
-          <li><a href="#">September 2013</a></li>
-          <li><a href="#">August 2013</a></li>
-          <li><a href="#">July 2013</a></li>
-          <li><a href="#">June 2013</a></li>
-          <li><a href="#">May 2013</a></li>
-          <li><a href="#">April 2013</a></li>
+          <li><a href="/Mars2020/">Марс 2020</a></li>
+          <li><a href="/NewHorizons/">Новые Горизонты</a></li>
+          <li><a href="/Akatcuki/">Акацуки (PLANET-C)</a></li>
+          <li><a href="/Voyager2/">Вояджер-2</a></li>
         </ol>
       </div>
 
       <div class="p-4">
-        <h4 class="fst-italic">Elsewhere</h4>
+        <h4 class="fst-italic">Контакты: </h4>
         <ol class="list-unstyled">
-          <li><a href="#">GitHub</a></li>
-          <li><a href="#">Twitter</a></li>
-          <li><a href="#">Facebook</a></li>
+          <li><a href="https://github.com/settings/profile">GitHub</a></li>
+          <li><a href="https://www.instagram.com/phogramz/">Instagram</a></li>
+          <li><a href="https://www.facebook.com/phogramz/">Facebook</a></li>
         </ol>
       </div>
     </div>
@@ -197,12 +132,6 @@
 
 </main><!-- /.container -->
 
-<footer class="blog-footer">
-  <p>Blog template built for <a href="https://getbootstrap.com/">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
-  <p>
-    <a href="#">Back to top</a>
-  </p>
-</footer>
+{{ template "footer" }}
 
-</body>
-</html>
+{{ end }}
