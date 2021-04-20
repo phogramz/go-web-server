@@ -100,6 +100,7 @@ func main() {
 func handleRequest() {
   http.HandleFunc("/", index) //arg1- отслеживание перехода по url; /-главная страница
   http.HandleFunc("/faq/", faq_page)
+  http.HandleFunc("/signup/", signUp_page)
   http.HandleFunc("/Pioner5/", Pioner5_page)
   http.HandleFunc("/HeliosB/", HeliosB_page)
   http.HandleFunc("/PionerE/", PionerE_page)
@@ -116,14 +117,27 @@ func handleRequest() {
   //...arg1-порт по чтению сервера(любой свободный на ПК); arg2-настройки для сервера; nil-NULL
 }
 
+func (this *Mission) parse_page(w_page http.ResponseWriter, r *http.Request){
+  tmpl, err := template.ParseFiles("templates/index.html",
+                                   "templates/header.html",
+                                   "templates/footer.html",
+                                   "templates/mission.html",
+                                   "templates/signup.html")
+  if err != nil {
+    panic(err)
+  }
+  tmpl.ExecuteTemplate(w_page, "mission", this)
+}
+
 func index(w_page http.ResponseWriter, r *http.Request) { // arg2(r)-запрос для проверки передачи данных
   tmpl, err := template.ParseFiles("templates/index.html",
                                    "templates/header.html",
                                    "templates/footer.html",
-                                   "templates/mission.html") //v1-хранит шаблон, v2-обработка ошибок
-  if err != nil {
-    panic(err)
-  }
+                                   "templates/mission.html",
+                                   "templates/signup.html") //v1-хранит шаблон, v2-обработка ошибок
+                                   if err != nil {
+                                     panic(err)
+                                   }
   tmpl.ExecuteTemplate(w_page, "index", nil) //отображение шаблона;
 }
 
@@ -139,18 +153,16 @@ func index(w_page http.ResponseWriter, r *http.Request) { // arg2(r)-запро�
 //     }
 // }
 
-func (this *Mission) parse_page(w_page http.ResponseWriter, r *http.Request){
-  //htmlFile := reflect.NameOf(*this).Elem()
-  //htmlFile := reflect.TypeOf(*this).Elem().Name
-  //htmlFile := getType(*this)
+func signUp_page(w_page http.ResponseWriter, r *http.Request){
   tmpl, err := template.ParseFiles("templates/index.html",
                                    "templates/header.html",
                                    "templates/footer.html",
-                                   "templates/mission.html") //v1-хранит шаблон, v2-обработка ошибок
-  if err != nil {
-    panic(err)
-  }
-  tmpl.ExecuteTemplate(w_page, "mission", this)
+                                   "templates/mission.html",
+                                   "templates/signup.html")
+                                 if err != nil {
+                                   panic(err)
+                                 }
+  tmpl.ExecuteTemplate(w_page, "signup", nil)
 }
 
 func faq_page(w_page http.ResponseWriter, r *http.Request) {
@@ -167,8 +179,6 @@ func faq_page(w_page http.ResponseWriter, r *http.Request) {
     }
     fmt.Fprintf(w_page, fmt.Sprintf("\n title: %s, \n genre: %s", title, genre))
   }
-  // fmt.Fprintf(w_page, `<h1>Main Text</h1>
-  // <b>Main Text</b>`)
 }
 
 func Pioner5_page(w_page http.ResponseWriter, r *http.Request)  {

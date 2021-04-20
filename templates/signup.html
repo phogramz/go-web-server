@@ -1,0 +1,36 @@
+{{ define "signup" }}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Вход</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://getbootstrap.com/docs/4.3/examples/sign-in/signin.css">
+  <link rel="stylesheet" href="https://getbootstrap.com/docs/5.0/examples/blog/blog.css">
+</head>
+<body>
+
+<body class="text-center">
+  <form class="form-signin">
+      <a class="blog-header-logo text-dark" href="/">Cosmo's Missions</a>
+  <img class="mb-4" src="https://cdn.pixabay.com/photo/2020/09/07/14/19/ufo-5552014_1280.png" alt="" width="100" height="100">
+  <h1 class="h3 mb-3 font-weight-normal">Зарегистрироваться</h1>
+  <label for="inputEmail" class="sr-only">Email address</label>
+  <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+  <label for="inputPassword" class="sr-only">Password</label>
+  <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+
+<div class="checkbox mb-3">
+  <label>
+    <input type="checkbox" value="remember-me"> Запомнить меня
+  </label>
+</div>
+<button class="btn btn-lg btn-primary btn-block" type="submit">Зарегистрироваться</button>
+<p class="mt-5 mb-3 text-muted">© 2020-2021</p>
+</form>
+</body>
+
+{{ end }}
