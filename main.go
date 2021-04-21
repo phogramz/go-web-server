@@ -18,6 +18,11 @@ const(
 )
   var db *sql.DB //база mysql
 
+type TUser struct {
+  Password string
+  Email string
+}
+
 type TCrew struct {
   member1 string
   member2 string
@@ -69,7 +74,7 @@ func (this *Mission) setNewTarget(newTarget string) { //явно определ�
 }
 
 func main() {
-  db, _ = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, pass, host, port, dbname))
+  db, _ = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, pass, host, port, dbname)) //подключение к БД
   defer db.Close()
 
 //Заполнение таблиц
@@ -97,27 +102,39 @@ func main() {
   handleRequest() //отслеживаем url, запускаем сервер
 }
 
+//Добавление данных о новом пользователе в БД
+func (this TUser) newUser() {
+  insert, err := db.Query(fmt.Sprintf("INSERT INTO `tbl_user` (`email`, `password`) VALUES ('%s', '%s')", this.Email, this.Password))
+  if err != nil {
+    panic(err)
+  }
+  defer insert.Close()
+}
+
+//Обрабатывает переходы по url, вызывает соответсвующие методы
 func handleRequest() {
   http.HandleFunc("/", index) //arg1- отслеживание перехода по url; /-главная страница
   http.HandleFunc("/faq/", faq_page)
   http.HandleFunc("/signup/", signUp_page)
-  http.HandleFunc("/Pioner5/", Pioner5_page)
-  http.HandleFunc("/HeliosB/", HeliosB_page)
-  http.HandleFunc("/PionerE/", PionerE_page)
-  http.HandleFunc("/Moon3/", Moon3_page)
-  http.HandleFunc("/Moon19/", Moon19_page)
-  http.HandleFunc("/Appolo11/", Appolo11_page)
-  http.HandleFunc("/MoonWalker2/", MoonWalker2_page)
-  http.HandleFunc("/Voyager2/", Voyager2_page)
-  http.HandleFunc("/Akatcuki/", Akatcuki_page)
-  http.HandleFunc("/NewHorizons/", NewHorizons_page)
-  http.HandleFunc("/Mars2020/", Mars2020_page)
+  http.HandleFunc("/create_user/", newUser_page)
+  http.HandleFunc("/pioner5/", Pioner5_page)
+  http.HandleFunc("/heliosB/", HeliosB_page)
+  http.HandleFunc("/pionerE/", PionerE_page)
+  http.HandleFunc("/moon3/", Moon3_page)
+  http.HandleFunc("/moon19/", Moon19_page)
+  http.HandleFunc("/appolo11/", Appolo11_page)
+  http.HandleFunc("/moonWalker2/", MoonWalker2_page)
+  http.HandleFunc("/voyager2/", Voyager2_page)
+  http.HandleFunc("/akatcuki/", Akatcuki_page)
+  http.HandleFunc("/newHorizons/", NewHorizons_page)
+  http.HandleFunc("/mars2020/", Mars2020_page)
 
   http.ListenAndServe(":8080", nil) //запуск локально сервера на порту:9080;...
   //...arg1-порт по чтению сервера(любой свободный на ПК); arg2-настройки для сервера; nil-NULL
 }
 
-func (this *Mission) parse_page(w_page http.ResponseWriter, r *http.Request){
+//Отображает html шаблон всех страниц Mission(передает данные в html файл)
+func (this *Mission) parsePage(w_page http.ResponseWriter, r *http.Request){
   tmpl, err := template.ParseFiles("templates/index.html",
                                    "templates/header.html",
                                    "templates/footer.html",
@@ -129,12 +146,14 @@ func (this *Mission) parse_page(w_page http.ResponseWriter, r *http.Request){
   tmpl.ExecuteTemplate(w_page, "mission", this)
 }
 
+//Отображает html шаблон Главной страницы
 func index(w_page http.ResponseWriter, r *http.Request) { // arg2(r)-запрос для проверки передачи данных
   tmpl, err := template.ParseFiles("templates/index.html",
                                    "templates/header.html",
                                    "templates/footer.html",
                                    "templates/mission.html",
-                                   "templates/signup.html") //v1-хранит шаблон, v2-обработка ошибок
+                                   "templates/signup.html",
+                                   "templates/signup_success.html") //v1-хранит шаблон, v2-обработка ошибок
                                    if err != nil {
                                      panic(err)
                                    }
@@ -153,6 +172,27 @@ func index(w_page http.ResponseWriter, r *http.Request) { // arg2(r)-запро�
 //     }
 // }
 
+//Обработка данных полученных при регистрации нового пользователя
+func newUser_page(w_page http.ResponseWriter, r *http.Request){
+  var _user TUser
+  _user.Email = r.FormValue("inputEmail")
+  _user.Password = r.FormValue("inputPassword")
+
+  _user.newUser()
+
+  tmpl, err := template.ParseFiles("templates/index.html",
+                                   "templates/header.html",
+                                   "templates/footer.html",
+                                   "templates/mission.html",
+                                   "templates/signup.html",
+                                   "templates/signup_success.html")
+                                 if err != nil {
+                                   panic(err)
+                                 }
+  tmpl.ExecuteTemplate(w_page, "signup_success", _user)
+}
+
+//Вызывает html файлы для отображения страницы регистрации
 func signUp_page(w_page http.ResponseWriter, r *http.Request){
   tmpl, err := template.ParseFiles("templates/index.html",
                                    "templates/header.html",
@@ -165,6 +205,7 @@ func signUp_page(w_page http.ResponseWriter, r *http.Request){
   tmpl.ExecuteTemplate(w_page, "signup", nil)
 }
 
+//Вызывает html файлы для отображения страницы FAQ
 func faq_page(w_page http.ResponseWriter, r *http.Request) {
   res, err := db.Query("SELECT `title`, `id_genre` FROM tbl_1")
   if err != nil {
@@ -181,6 +222,7 @@ func faq_page(w_page http.ResponseWriter, r *http.Request) {
   }
 }
 
+//Обработка перехода по ссылки /pioner5/ (делает выборку из БД, передает в ф-ю вывода шаблона)
 func Pioner5_page(w_page http.ResponseWriter, r *http.Request)  {
   res, err := db.Query("SELECT `member1`, `member2`, `member3`, `member4`, `member5`, `member6`, `member7`" +
     " FROM tbl_crew WHERE ID_Crew = 1")
@@ -218,11 +260,12 @@ func Pioner5_page(w_page http.ResponseWriter, r *http.Request)  {
       panic(err)
     }
     Pioner5.Crew = Pioner5_crew
-    Pioner5.parse_page(w_page, r)
+    Pioner5.parsePage(w_page, r)
     //fmt.Fprintf(w_page, Pioner5.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
 
+//Обработка перехода по ссылки /heliosb/ (делает выборку из БД, передает в ф-ю вывода шаблона)
 func HeliosB_page(w_page http.ResponseWriter, r *http.Request)  {
   res, err := db.Query("SELECT `member1`, `member2`, `member3`, `member4`, `member5`, `member6`, `member7`" +
     " FROM tbl_crew WHERE ID_Crew = 2")
@@ -261,7 +304,7 @@ func HeliosB_page(w_page http.ResponseWriter, r *http.Request)  {
       panic(err)
     }
     HeliosB.Crew = HeliosB_crew
-    HeliosB.parse_page(w_page, r)
+    HeliosB.parsePage(w_page, r)
     //fmt.Fprintf(w_page, HeliosB.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
@@ -304,7 +347,7 @@ func PionerE_page(w_page http.ResponseWriter, r *http.Request)  {
       panic(err)
     }
     PionerE.Crew = PionerE_crew
-    PionerE.parse_page(w_page, r)
+    PionerE.parsePage(w_page, r)
     //fmt.Fprintf(w_page, PionerE.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
@@ -347,7 +390,7 @@ func Moon3_page(w_page http.ResponseWriter, r *http.Request)  {
       panic(err)
     }
     Moon3.Crew = Moon3_crew
-    Moon3.parse_page(w_page, r)
+    Moon3.parsePage(w_page, r)
     //fmt.Fprintf(w_page, Moon3.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
@@ -390,7 +433,7 @@ func Moon19_page(w_page http.ResponseWriter, r *http.Request)  {
       panic(err)
     }
     Moon19.Crew = Moon19_crew
-    Moon19.parse_page(w_page, r)
+    Moon19.parsePage(w_page, r)
     //fmt.Fprintf(w_page, Moon19.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
@@ -433,7 +476,7 @@ func Appolo11_page(w_page http.ResponseWriter, r *http.Request)  {
       panic(err)
     }
     Appolo11.Crew = Appolo11_crew
-    Appolo11.parse_page(w_page, r)
+    Appolo11.parsePage(w_page, r)
     //fmt.Fprintf(w_page, Appolo11.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
@@ -476,7 +519,7 @@ func MoonWalker2_page(w_page http.ResponseWriter, r *http.Request)  {
       panic(err)
     }
     MoonWalker2.Crew = MoonWalker2_crew
-    MoonWalker2.parse_page(w_page, r)
+    MoonWalker2.parsePage(w_page, r)
     //fmt.Fprintf(w_page, MoonWalker2.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
@@ -519,7 +562,7 @@ func Voyager2_page(w_page http.ResponseWriter, r *http.Request)  {
       panic(err)
     }
     Voyager2.Crew = Voyager2_crew
-    Voyager2.parse_page(w_page, r)
+    Voyager2.parsePage(w_page, r)
     //fmt.Fprintf(w_page, Voyager2.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
@@ -562,7 +605,7 @@ func Akatcuki_page(w_page http.ResponseWriter, r *http.Request)  {
       panic(err)
     }
     Akatcuki.Crew = Akatcuki_crew
-    Akatcuki.parse_page(w_page, r)
+    Akatcuki.parsePage(w_page, r)
     //fmt.Fprintf(w_page, Akatcuki.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
@@ -605,7 +648,7 @@ func NewHorizons_page(w_page http.ResponseWriter, r *http.Request)  {
       panic(err)
     }
     NewHorizons.Crew = NewHorizons_crew
-    NewHorizons.parse_page(w_page, r)
+    NewHorizons.parsePage(w_page, r)
     //fmt.Fprintf(w_page, NewHorizons.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
@@ -648,7 +691,7 @@ func Mars2020_page(w_page http.ResponseWriter, r *http.Request)  {
       panic(err)
     }
     Mars2020.Crew = Mars2020_crew
-    Mars2020.parse_page(w_page, r)
+    Mars2020.parsePage(w_page, r)
     //fmt.Fprintf(w_page, Mars2020.getAllInfo()) //вывод форматируемой строки; arg1-куда вывод; arg2-что выводим;
   }
 }
