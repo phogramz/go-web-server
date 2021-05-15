@@ -102,15 +102,6 @@ func main() {
   handleRequest() //отслеживаем url, запускаем сервер
 }
 
-//Добавление данных о новом пользователе в БД
-func (this TUser) newUser() {
-  insert, err := db.Query(fmt.Sprintf("INSERT INTO `tbl_user` (`email`, `password`) VALUES ('%s', '%s')", this.Email, this.Password))
-  if err != nil {
-    panic(err)
-  }
-  defer insert.Close()
-}
-
 //Обрабатывает переходы по url, вызывает соответсвующие методы
 func handleRequest() {
   http.HandleFunc("/", index) //arg1- отслеживание перехода по url; /-главная страница
@@ -172,14 +163,37 @@ func index(w_page http.ResponseWriter, r *http.Request) { // arg2(r)-запро�
 //     }
 // }
 
-//Обработка данных полученных при регистрации нового пользователя
+//Добавление данных о новом пользователе в БД (3)
+func (this TUser) newUser() {
+  insert, err := db.Query(fmt.Sprintf("INSERT INTO `tbl_user` (`email`, `password`) VALUES ('%s', '%s')", this.Email, this.Password))
+  if err != nil {
+    panic(err)
+  }
+  defer insert.Close()
+}
+
+//Обработка данных полученных при регистрации нового пользователя (2)
 func newUser_page(w_page http.ResponseWriter, r *http.Request){
   var _user TUser
-  _user.Email = r.FormValue("inputEmail")
+  _user.Email = r.FormValue("inputEmail") //запись значений внесенных пользователем
   _user.Password = r.FormValue("inputPassword")
 
-  _user.newUser()
+  check_user_in_tbl, err := db.Query(fmt.Sprintf("SELECT `email` FROM tbl_user WHERE email = '%s'", _user.Email))
+  if err != nil {
+    panic(err)
+  }
+  var check_email string
+  for check_user_in_tbl.Next() {
+    err = check_user_in_tbl.Scan(&check_email)
+  }
+  defer check_user_in_tbl.Close()
 
+  if check_email == "" {
+  _user.newUser() //вызывает ф-ю создания записи о пользователе в БД
+  } else {
+  _user.Email = "ERROR_USER_ALREADY_EXISTS"
+  }
+  //После создания записи выводит страницу успешной регистрации
   tmpl, err := template.ParseFiles("templates/index.html",
                                    "templates/header.html",
                                    "templates/footer.html",
@@ -192,7 +206,7 @@ func newUser_page(w_page http.ResponseWriter, r *http.Request){
   tmpl.ExecuteTemplate(w_page, "signup_success", _user)
 }
 
-//Вызывает html файлы для отображения страницы регистрации
+//Вызывает html файлы для отображения страницы регистрации (1)
 func signUp_page(w_page http.ResponseWriter, r *http.Request){
   tmpl, err := template.ParseFiles("templates/index.html",
                                    "templates/header.html",
