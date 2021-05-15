@@ -1,1 +1,1 @@
-# go-web1
+# go-web-server
